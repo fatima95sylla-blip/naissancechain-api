@@ -1,0 +1,365 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "NaissanceChain API Documentation",
+        "description": "API complète pour la gestion des actes de naissance avec blockchain et QR codes",
+        "version": "1.0.0",
+        "contact": {
+            "email": "support@naissancechain.gn",
+            "name": "Équipe NaissanceChain"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/v1",
+            "description": "API de Développement"
+        }
+    ],
+    "security": [
+        {
+            "BearerAuth": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "JWT Bearer Token"
+            }
+        },
+        "schemas": {
+            "Naissance": {
+                "type": "object",
+                "title": "Acte de Naissance",
+                "description": "Modèle représentant un acte de naissance dans NaissanceChain",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "ID unique de l'acte",
+                        "example": 1
+                    },
+                    "numero_unique": {
+                        "type": "string",
+                        "description": "Numéro unique de l'acte généré par le système",
+                        "example": "NC-2026-000001"
+                    },
+                    "nom_enfant": {
+                        "type": "string",
+                        "description": "Nom de famille de l'enfant",
+                        "example": "TOURE"
+                    },
+                    "prenom_enfant": {
+                        "type": "string",
+                        "description": "Prénom de l'enfant",
+                        "example": "Ibrahim"
+                    },
+                    "date_naissance": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date de naissance de l'enfant",
+                        "example": "2026-03-20"
+                    },
+                    "lieu_naissance": {
+                        "type": "string",
+                        "description": "Lieu de naissance",
+                        "example": "Hôpital Donka, Conakry"
+                    },
+                    "sexe": {
+                        "type": "string",
+                        "enum": ["M", "F"],
+                        "description": "Sexe de l'enfant",
+                        "example": "M"
+                    },
+                    "numero_acte": {
+                        "type": "string",
+                        "description": "Numéro officiel de l'acte",
+                        "example": "ACTE-2026-002"
+                    },
+                    "statut": {
+                        "type": "string",
+                        "enum": ["valide", "en_attente", "synchronise", "annule"],
+                        "description": "Statut de l'acte",
+                        "example": "valide"
+                    },
+                    "hash_sha256": {
+                        "type": "string",
+                        "description": "Hash SHA256 pour l'intégrité blockchain",
+                        "example": "abc123def456789..."
+                    },
+                    "qr_code_url": {
+                        "type": "string",
+                        "description": "URL du code QR généré",
+                        "example": "/storage/qr/abc123.png"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date de création de l'enregistrement",
+                        "example": "2026-04-30T10:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date de dernière modification",
+                        "example": "2026-04-30T10:00:00Z"
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": ["Authentification"],
+                "summary": "Inscription d'un nouvel utilisateur",
+                "description": "Crée un nouveau compte utilisateur et retourne un token JWT",
+                "operationId": "register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["name", "email", "password", "password_confirmation"],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe",
+                                        "description": "Nom complet de l'utilisateur"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com",
+                                        "description": "Adresse email de l'utilisateur"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123",
+                                        "description": "Mot de passe (minimum 8 caractères)"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123",
+                                        "description": "Confirmation du mot de passe"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Inscription réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Inscription réussie"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "user": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {"type": "integer", "example": 1},
+                                                        "name": {"type": "string", "example": "John Doe"},
+                                                        "email": {"type": "string", "example": "john@example.com"},
+                                                        "created_at": {"type": "string", "format": "date-time"}
+                                                    }
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {"type": "boolean", "example": false},
+                                        "message": {"type": "string", "example": "Erreur de validation"},
+                                        "errors": {"type": "object"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": ["Authentification"],
+                "summary": "Connexion d'un utilisateur",
+                "description": "Authentifie un utilisateur et retourne un token JWT",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["email", "password"],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com",
+                                        "description": "Adresse email de l'utilisateur"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123",
+                                        "description": "Mot de passe de l'utilisateur"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {"type": "boolean", "example": true},
+                                        "message": {"type": "string", "example": "Connexion réussie"},
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "user": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {"type": "integer", "example": 1},
+                                                        "name": {"type": "string", "example": "John Doe"},
+                                                        "email": {"type": "string", "example": "john@example.com"},
+                                                        "created_at": {"type": "string", "format": "date-time"}
+                                                    }
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Identifiants invalides",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {"type": "boolean", "example": false},
+                                        "message": {"type": "string", "example": "Identifiants invalides"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/naissances": {
+            "post": {
+                "tags": ["Naissances"],
+                "summary": "Créer un nouvel acte de naissance",
+                "description": "Crée un nouvel acte de naissance avec génération QR code et stockage blockchain",
+                "operationId": "createNaissance",
+                "security": [{"BearerAuth": []}],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["nom_enfant", "prenom_enfant", "date_naissance", "lieu_naissance", "sexe", "nom_pere", "prenom_pere", "nom_mere", "prenom_mere", "declarant_nom", "declarant_prenom", "declarant_lien", "officier_etat_civil", "numero_acte", "date_enregistrement"],
+                                "properties": {
+                                    "nom_enfant": {"type": "string", "example": "TOURE", "description": "Nom de l'enfant"},
+                                    "prenom_enfant": {"type": "string", "example": "Ibrahim", "description": "Prénom de l'enfant"},
+                                    "date_naissance": {"type": "string", "format": "date", "example": "2026-03-20", "description": "Date de naissance"},
+                                    "lieu_naissance": {"type": "string", "example": "Hôpital Donka, Conakry", "description": "Lieu de naissance"},
+                                    "sexe": {"type": "string", "enum": ["M", "F"], "example": "M", "description": "Sexe de l'enfant"},
+                                    "numero_acte": {"type": "string", "example": "ACTE-2026-002", "description": "Numéro de l'acte"},
+                                    "date_enregistrement": {"type": "string", "format": "date-time", "example": "2026-04-30T10:00:00Z", "description": "Date d'enregistrement"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Acte de naissance créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {"type": "boolean", "example": true},
+                                        "message": {"type": "string", "example": "Acte de naissance créé avec succès"},
+                                        "data": {
+                                            "$ref": "#/components/schemas/Naissance"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentification",
+            "description": "Endpoints pour l'authentification des utilisateurs"
+        },
+        {
+            "name": "Naissances",
+            "description": "Endpoints pour la gestion des actes de naissance"
+        }
+    ]
+}

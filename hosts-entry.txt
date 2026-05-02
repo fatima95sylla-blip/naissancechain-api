@@ -1,0 +1,11 @@
+# Add this to your Windows hosts file: C:\Windows\System32\drivers\etc\hosts
+
+# NaissanceChain API Local Development
+127.0.0.1    naissancechain.local
+127.0.0.1    www.naissancechain.local
+
+# Flutter Development (if needed)
+127.0.0.1    flutter.local
+
+# Additional development domains
+127.0.0.1    api.naissancechain.local

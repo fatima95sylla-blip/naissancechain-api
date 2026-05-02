@@ -1,0 +1,139 @@
+# WAMP64 Setup Instructions for NaissanceChain API
+# Execute these steps in order
+
+# ========================================
+# 1. WAMP64 Configuration
+# ========================================
+
+# Enable required Apache modules:
+# - rewrite_module
+# - headers_module
+# - deflate_module
+# - expires_module
+# - ssl_module (for HTTPS)
+
+# Enable required PHP extensions:
+# - php_opcache
+# - php_mysql
+# - php_pdo_mysql
+# - php_fileinfo
+# - php_mbstring
+# - php_curl
+# - php_gd
+# - php_zip
+# - php_xml
+# - php_json
+# - php_tokenizer
+
+# ========================================
+# 2. VirtualHost Setup
+# ========================================
+
+# Add to C:\wamp64\bin\apache\apache2.4.54\conf\extra\httpd-vhosts.conf:
+
+# Include the virtual host configuration
+Include "C:/wamp64/www/naissancechain-api/apache-vhost.conf"
+
+# ========================================
+# 3. PHP Configuration
+# ========================================
+
+# Add to C:\wamp64\bin\php\php8.1.13\php.ini:
+
+# Memory and execution
+memory_limit = 512M
+max_execution_time = 300
+max_input_time = 300
+
+# File uploads
+upload_max_filesize = 10M
+post_max_size = 12M
+max_file_uploads = 20
+
+# Laravel requirements
+max_input_vars = 3000
+always_populate_raw_post_data = -1
+
+# OPcache (uncomment and configure)
+zend_extension=opcache
+opcache.enable=1
+opcache.memory_consumption=512
+opcache.max_accelerated_files=4000
+opcache.revalidate_freq=0
+opcache.validate_timestamps=0
+opcache.save_comments=0
+opcache.load_comments=0
+opcache.fast_shutdown=1
+
+# ========================================
+# 4. MySQL Setup
+# ========================================
+
+# Create database:
+# CREATE DATABASE naissancechain_prod CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# Create user (optional):
+# CREATE USER 'naissancechain'@'localhost' IDENTIFIED BY 'your_password';
+# GRANT ALL PRIVILEGES ON naissancechain_prod.* TO 'naissancechain'@'localhost';
+# FLUSH PRIVILEGES;
+
+# ========================================
+# 5. Windows Hosts File
+# ========================================
+
+# Edit C:\Windows\System32\drivers\etc\hosts:
+# Add the lines from hosts-entry.txt
+
+# ========================================
+# 6. Permissions Setup
+# ========================================
+
+# Set permissions for WAMP64 directories:
+# - C:\wamp64\www\naissancechain-api\storage
+# - C:\wamp64\www\naissancechain-api\bootstrap\cache
+# - C:\wamp64\www\naissancechain-api\public
+
+# Use: Right-click > Properties > Security > Edit > Add IUSR with Full Control
+
+# ========================================
+# 7. Windows Services
+# ========================================
+
+# Ensure these services are running:
+# - wampapache
+# - wampmysql
+
+# Set startup type to Automatic
+
+# ========================================
+# 8. Firewall Configuration
+# ========================================
+
+# Allow Apache through Windows Firewall:
+# - Port 80 (HTTP)
+# - Port 443 (HTTPS)
+# - Port 3306 (MySQL, if remote access needed)
+
+# ========================================
+# 9. SSL Certificate (Optional)
+# ========================================
+
+# For local HTTPS development:
+# 1. Generate self-signed certificate
+# 2. Place in C:\wamp64\bin\apache\conf\ssl\
+# 3. Update apache-vhost.conf paths
+# 4. Enable ssl_module in Apache
+
+# ========================================
+# 10. Testing
+# ========================================
+
+# Test URLs:
+# - http://naissancechain.local
+# - http://naissancechain.local/api/v1/health
+# - http://naissancechain.local/api/v1/register
+
+# Test API with Postman:
+# - Import collection
+# - Set base URL: http://naissancechain.local/api/v1
+# - Test authentication endpoints

@@ -1,0 +1,152 @@
+# Laravel Artisan Commands for NaissanceChain Deployment
+# Execute in order for optimal results
+
+# ========================================
+# 1. Environment Setup
+# ========================================
+# Copy production environment
+copy env.production.txt .env
+
+# Generate application key
+php artisan key:generate
+
+# Clear all caches
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# ========================================
+# 2. Database Setup
+# ========================================
+# Create queue jobs table
+php artisan queue:table
+
+# Run all migrations
+php artisan migrate --force
+
+# Seed database (if available)
+php artisan db:seed --force
+
+# Create storage link
+php artisan storage:link
+
+# ========================================
+# 3. Optimization
+# ========================================
+# Cache configuration
+php artisan config:cache
+
+# Cache routes
+php artisan route:cache
+
+# Cache views
+php artisan view:cache
+
+# Cache events
+php artisan event:cache
+
+# Optimize autoloader
+composer dump-autoload --optimize
+
+# Optimize for production
+php artisan optimize
+
+# ========================================
+# 4. Queue Management
+# ========================================
+# Restart queue workers
+php artisan queue:restart
+
+# Start queue worker (run in background)
+php artisan queue:work --memory=512 --sleep=3 --tries=3 --timeout=60
+
+# Start failed queue worker (if needed)
+php artisan queue:failed
+
+# Retry failed jobs
+php artisan queue:retry all
+
+# ========================================
+# 5. Maintenance Commands
+# ========================================
+# Put application in maintenance mode
+php artisan down
+
+# Bring application back up
+php artisan up
+
+# Clear all caches (maintenance)
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# ========================================
+# 6. Monitoring
+# ========================================
+# List all routes
+php artisan route:list
+
+# Show application status
+php artisan about
+
+# Check queue status
+php artisan queue:monitor
+
+# Show scheduled tasks
+php artisan schedule:list
+
+# ========================================
+# 7. Testing
+# ========================================
+# Run all tests
+php artisan test
+
+# Run specific test
+php artisan test --filter AuthTest
+
+# Generate test coverage
+php artisan test --coverage
+
+# ========================================
+# 8. Security
+# ========================================
+# Generate fresh app key (security)
+php artisan key:generate --force
+
+# Clear and recache all (security)
+php artisan config:clear
+php artisan config:cache
+php artisan route:clear
+php artisan route:cache
+
+# Check for vulnerabilities
+composer audit
+
+# ========================================
+# 9. Performance
+# ========================================
+# Preload classes (PHP 8+)
+php artisan optimize
+
+# Warm up caches
+php artisan cache:warmup
+
+# Check performance
+php artisan about --only=cache,database,environment
+
+# ========================================
+# 10. Logs and Debugging
+# ========================================
+# Show recent logs
+tail -f storage/logs/laravel.log
+
+# Clear logs
+php artisan log:clear
+
+# Show queue failed jobs
+php artisan queue:failed
+
+# Clear failed jobs
+php artisan queue:flush
